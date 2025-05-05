@@ -1,4 +1,4 @@
-# This project is a showecase of my engineering skills.
+# This project is a showcase of my engineering skills.
 
 # Done:
  1. OOP
@@ -8,6 +8,7 @@
  5. Multi-Threading
 
 # To-Do:
- 1. Unit tests for data science purposes - tests of variables (length, type, mean, std)
- 2. Docker - to deploy to clouds
- 3. CI\CD - automated deploy to clouds with prior tests
+ 1. Some basic DS model
+ 2. Unit tests for data science purposes - tests of variables (length, type, mean, std)
+ 3. Docker - to deploy to clouds
+ 4. CI\CD - automated deploy to clouds with prior tests
