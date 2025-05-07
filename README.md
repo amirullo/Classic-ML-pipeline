@@ -6,9 +6,9 @@
  3. Pipeline orchestrator
  4. Queues managing each stage: data loading, feature engineering, and prediction
  5. Multi-Threading
+ 6. Some basic DS model
 
 # To-Do:
- 1. Some basic DS model
- 2. Unit tests for data science purposes - tests of variables (length, type, mean, std)
- 3. Docker - to deploy to clouds
- 4. CI\CD - automated deploy to clouds with prior tests
+ 1. Unit tests for data science purposes - tests of variables (length, type, mean, std)
+ 2. Docker - to deploy to clouds
+ 3. CI\CD - automated deploy to clouds with prior tests
