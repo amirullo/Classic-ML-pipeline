@@ -17,4 +17,6 @@ class MLModel:
         y = df[df.columns[0]]
         self.pipeline.fit(X, y)
         df['prediction'] = self.pipeline.predict(X)
-        return df[['prediction']]
+        score = round(self.pipeline.score(X, y), 3)
+        logger.info(f"Model score (R_sqr) = {score}")
+        return (df[['prediction']], score)

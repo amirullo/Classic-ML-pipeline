@@ -21,6 +21,7 @@ class PipelineOrchestrator:
 
     def start(self):
         for stage in self.stages:
+            logger.debug(f"Starting {stage.__class__} : {stage.name}")
             stage.start()
 
     def stop(self):
