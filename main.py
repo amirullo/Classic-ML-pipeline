@@ -25,7 +25,7 @@ def get_last_score():
 if __name__ == "__main__":
     request = PredictionRequest(output_path='some_predict.csv')
     orchestrator.enqueue(request)
-    print("Prediction task submitted. Press CMD+C to stop.")
+    print("Prediction task submitted. Press ^ + C to stop.")
 
     try:
         while True:
