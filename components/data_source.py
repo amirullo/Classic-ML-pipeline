@@ -6,6 +6,7 @@ import datetime as dt
 from abc import ABC, abstractmethod
 from config.logger import logger
 
+
 class BaseDataSource(ABC):
     @abstractmethod
     def load_data(self) -> pd.DataFrame:
@@ -17,35 +18,31 @@ class CSVDataSource(BaseDataSource):
 
 class YahooFinDataSource(BaseDataSource):
     def load_data(self) -> pd.DataFrame:
-        df = self.download_data()
-        # df = pd.DataFrame()
-        # for fname in os.listdir(path):
-        #     input_path = os.path.join(path, fname)
-        #     if fname.endswith('.csv') and os.path.exists(input_path):
-        #         df = self.read_data_from_file(input_path)
-        # if df.shape[0] == 0:
-        #     df = self.download_data()
-        #     df.to_csv(os.path.join(path, 'sp500_closing_prices.csv'))
+        logger.info(f"Getting data from YahooFinance")
+        tickers = self.get_tickers()
+        closing_prices = self.download_data(tickers)
+        df = self.tidy_up_data(closing_prices)
         return df
 
-    def download_data(self) -> pd.DataFrame:
-        logger.info(f"Getting data from YahooFinance")
-
+    def get_tickers(self):
         # Get list of SP500 tickers from wiki
         url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         tables = pd.read_html(url)
         sp500_table = tables[0]
         tickers = sp500_table['Symbol'].tolist()
 
-        # Set periods to download
-        end_date = dt.datetime.now().date()
-        start_date = end_date - dt.timedelta(days=30 * 12 * 5)
-        closing_prices = {}
-
         tickers = tickers[:10]
 
         # Add SP500 index to tickers
         tickers.append('^GSPC')
+        return tickers
+
+    def download_data(self, tickers) -> pd.DataFrame:
+
+        # Set periods to download
+        end_date = dt.datetime.now().date()
+        start_date = end_date - dt.timedelta(days=30 * 12 * 5)
+        closing_prices = {}
 
         for ticker in tickers:
             try:
@@ -66,12 +63,15 @@ class YahooFinDataSource(BaseDataSource):
             except Exception as e:
                 logger.error(f"Error downloading {ticker}: {e}")
 
+        logger.info(f"Data downloaded from YahooFinance")
+
+        return closing_prices
+
+    def tidy_up_data(self, closing_prices):
         df = pd.concat(closing_prices, axis=1)
         df.columns = [x for x, y in df.columns]
         df = df.sort_index()
         df.rename(columns={'^GSPC': 'target'}, inplace=True)
-        logger.info(f"Data downloaded from YahooFinance")
-
         return df
 
     def read_data_from_file(self, path: str) -> pd.DataFrame:
