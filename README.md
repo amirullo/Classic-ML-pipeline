@@ -10,5 +10,6 @@
  7. Unit tests for data science purposes - tests of variables (length, type, mean, std)
 
 # To-Do:
- 1. Docker - to deploy to clouds
- 2. CI\CD - automated deploy to clouds with prior tests
+ 1. Poetry
+ 2. Docker - to deploy to clouds
+ 3. CI\CD - automated deploy to clouds with prior tests
