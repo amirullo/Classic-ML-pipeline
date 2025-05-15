@@ -7,31 +7,43 @@ on:
     branches: [master, enhancement/**]
 
 jobs:
-  build-test-deploy:
+  lint-and-test:
+    name: Lint, Test, Coverage on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.10
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: ${{ matrix.python-version }}
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov ruff  # ✅ Added ruff & coverage dependencies
+          pip install pytest pytest-cov ruff
 
-      - name: Run Ruff Linter
-        run: ruff check .  # ✅ This lints the full repo
+      - name: Run Ruff Linter (Check only)
+        run: ruff check .
 
-      - name: Run unit tests with coverage
+      - name: Run Tests with Coverage
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)
-          pytest --cov=. --cov-report=xml  # ✅ Changed --cov=app to --cov=. to include all source files
+          pytest --cov=. --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -41,17 +53,23 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
+  docker:
+    name: Docker Build & Push (Only on Python 3.10)
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: ${{ github.ref == 'refs/heads/master' && contains(needs.lint-and-test.outputs.python-version, '3.10') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Log in to Docker Hub
-        if: success()
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        if: success()
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-ml-app:latest .
 
-      - name: Push Docker image to Docker Hub
-        if: success()
+      - name: Push Docker image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-ml-app:latest
