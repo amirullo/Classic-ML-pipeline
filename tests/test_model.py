@@ -1,13 +1,6 @@
 import pytest
 import pandas as pd
 import numpy as np
-import threading
-import queue
-import datetime as dt
-from unittest.mock import patch, MagicMock, ANY
-import os
-import time
-from typing import Optional
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge
@@ -15,7 +8,6 @@ from sklearn.model_selection import train_test_split
 from scipy import stats
 # Import the classes to test
 # Update these imports to match your actual module structure
-from stages.predict_stage import PredictStage
 from components.model import MLModel
 
 class TestMLModel:

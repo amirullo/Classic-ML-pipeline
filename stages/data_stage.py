@@ -1,6 +1,5 @@
 import threading
-from components.data_source import CSVDataSource, YahooFinDataSource
-import time
+from components.data_source import YahooFinDataSource
 from config.logger import logger
 
 class DataStage(threading.Thread):
