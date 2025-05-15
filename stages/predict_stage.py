@@ -4,6 +4,7 @@ from components.model import MLModel
 import datetime as dt
 from typing import Optional
 from config.logger import logger
+import queue
 
 class PredictStage(threading.Thread):
     def __init__(self, input_queue, stop_event):
@@ -21,5 +22,8 @@ class PredictStage(threading.Thread):
                 predictions, self.score = MLModel().predict(df)
                 self.last_dt = dt.datetime.now()
                 predictions.to_csv(request.output_path, index=False)
-            except Exception:
+            except queue.Empty:
+                continue
+            except Exception as e:
+                logger.warning(f"Smth went wrong: {e}")
                 continue

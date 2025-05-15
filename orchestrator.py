@@ -24,10 +24,30 @@ class PipelineOrchestrator:
             logger.debug(f"Starting {stage.__class__} : {stage.name}")
             stage.start()
 
-    def stop(self):
-        self.stop_event.set()
-        for stage in self.stages:
-            stage.join()
-
     def enqueue(self, request: PredictionRequest):
         self.raw_data_queue.put(request)
+
+    def stop(self):
+        # Set stop event
+        self.stop_event.set()
+
+        # Clear all queues to unblock any waiting threads
+        self._clear_queue(self.raw_data_queue)
+        self._clear_queue(self.features_queue)
+        self._clear_queue(self.prediction_queue)
+
+        # Join all stages with timeout
+        for stage in self.stages:
+            stage.join(timeout=1.0)
+            if stage.is_alive():
+                logger.warning(f"Warning: {stage.name} did not terminate properly")
+
+
+    def _clear_queue(self, q):
+        """Safely clear all items from a queue"""
+        try:
+            while not q.empty():
+                q.get_nowait()
+                q.task_done()
+        except Exception as e:
+            logger.debug(f"Error clearing queue: {e}")

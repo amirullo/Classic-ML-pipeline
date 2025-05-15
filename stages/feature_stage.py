@@ -1,5 +1,6 @@
 import threading
 from components.feature_engineer import LagFeatureEngineer, FillNAFeatures
+import queue
 
 from config.logger import logger
 
@@ -19,5 +20,8 @@ class FeatureStage(threading.Thread):
                 df = FillNAFeatures().transform(df)
 
                 self.output_queue.put((df, request))
-            except Exception:
+            except queue.Empty:
+                continue
+            except Exception as e:
+                logger.warning(f"Smth went wrong: {e}")
                 continue
