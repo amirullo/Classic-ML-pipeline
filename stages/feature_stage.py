@@ -1,5 +1,5 @@
 import threading
-from components.feature_engineer import LagFeatureEngineer, FillNAFeatures
+from components.feature_engineer import FillNAFeatures
 
 from config.logger import logger
 

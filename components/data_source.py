@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 import time
 import yfinance as yf
 import datetime as dt
@@ -18,7 +17,7 @@ class CSVDataSource(BaseDataSource):
 
 class YahooFinDataSource(BaseDataSource):
     def load_data(self) -> pd.DataFrame:
-        logger.info(f"Getting data from YahooFinance")
+        logger.info("Getting data from YahooFinance")
         tickers = self.get_tickers()
         closing_prices = self.download_data(tickers)
         df = self.tidy_up_data(closing_prices)
@@ -63,7 +62,7 @@ class YahooFinDataSource(BaseDataSource):
             except Exception as e:
                 logger.error(f"Error downloading {ticker}: {e}")
 
-        logger.info(f"Data downloaded from YahooFinance")
+        logger.info("Data downloaded from YahooFinance")
 
         return closing_prices
 
@@ -75,7 +74,7 @@ class YahooFinDataSource(BaseDataSource):
         return df
 
     def read_data_from_file(self, path: str) -> pd.DataFrame:
-        logger.info(f"Reading data from file")
+        logger.info("Reading data from file")
         df = pd.read_csv(path, index_col='Date')
         df.index = pd.to_datetime(df.index)
         df = df.sort_index()

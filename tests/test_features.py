@@ -1,10 +1,8 @@
 import pytest
 import pandas as pd
-from unittest.mock import patch, MagicMock
 import numpy as np
 from pandas.testing import assert_frame_equal
-from components.feature_engineer import FeatureEngineer, LagFeatureEngineer, FillNAFeatures
-from stages.feature_stage import FeatureStage
+from components.feature_engineer import FillNAFeatures
 
 
 class TestFillNAFeatures:

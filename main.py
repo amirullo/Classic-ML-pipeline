@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from orchestrator import PipelineOrchestrator
 from schemas import PredictionRequest
-import sys
 import time
 import datetime as dt
 
