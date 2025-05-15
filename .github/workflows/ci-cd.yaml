@@ -23,14 +23,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest pytest-cov ruff  # ✅ Added ruff & coverage dependencies
 
       - name: Run Ruff Linter
-        run: ruff check .
+        run: ruff check .  # ✅ This lints the full repo
 
       - name: Run unit tests with coverage
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)
-          pytest --cov=app --cov-report=xml
+          pytest --cov=. --cov-report=xml  # ✅ Changed --cov=app to --cov=. to include all source files
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
