@@ -9,3 +9,4 @@ yfinance
 uvicorn
 pytest-cov
 ruff
+lxml

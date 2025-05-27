@@ -8,6 +8,10 @@ app = FastAPI()
 orchestrator = PipelineOrchestrator()
 orchestrator.start()
 
+@app.get("/")
+def health_check():
+    return {"health_check": "OK"}
+
 @app.get("/predict")
 def predict_route():
     request = PredictionRequest(output_path='some_predict.csv')
