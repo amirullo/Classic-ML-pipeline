@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
-from config.logger import logger
 
 class FeatureEngineer(ABC):
     @abstractmethod
